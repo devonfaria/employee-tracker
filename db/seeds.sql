@@ -15,14 +15,14 @@ VALUES ("CEO", 200000, 3),
        ("Accounts Manager", 180000, 4),
        ("MySQL Engineer", 120000, 2);
 
-INSERT INTO `employee` (first_name, last_name, role_id)
-VALUES ("Devon", "Faria", 1),
-       ("Deb", "Sparr", 2),
-       ("Rebecca", "Hill", 6),
-       ("Heather", "Barnes", 5),
-       ("Michael", "Pearce", 7),
-       ("Johnny", "Pearce", 7),
-       ("Danielle", "Alfieri", 3),
-       ("Chris", "Spagnesi", 4),
-       ("Greg", "Hyde", 3),
-       ("Heather", "Smith", 4);
+INSERT INTO `employee` (first_name, last_name, role_id, manager_id)
+VALUES ("Devon", "Faria", 1, 1),
+       ("Deb", "Sparr", 2, 1),
+       ("Rebecca", "Hill", 6, 2),
+       ("Heather", "Barnes", 5, 3),
+       ("Michael", "Pearce", 7, 1),
+       ("Johnny", "Pearce", 7, 1),
+       ("Danielle", "Alfieri", 3, 1),
+       ("Chris", "Spagnesi", 4, 5),
+       ("Greg", "Hyde", 3, 1),
+       ("Heather", "Smith", 4, 5);

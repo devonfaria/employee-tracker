@@ -25,69 +25,8 @@ const db = mysql.createConnection(
   console.log(`Connected to the emptracker_db database.`)
 );
 
-// Constructor functions for table objects
-// const Employee = require('./assets/lib/employee');
-// const Department = require('./assets/lib/department');
-// const Role = require('./assets/lib/role');
 
-// const questionsRole = [
-//   {
-//     type: 'input',
-//     message: "What is the name of the role",
-//     name: 'name',
-//   },
-//   {
-//     type: 'input',
-//     message: "What is the salary of the role?",
-//     name: 'salary',
-//   },
-//   {
-//     type: 'rawlist',
-//     message: "What department does the role belong to?",
-//     name: 'department',
-//     choices: [
-//       {name: 'Executive Management', value: 'exec'},
-//       {name: 'Accounting', value: 'acc'},
-//       {name: 'Web Development', value: 'web-dev'},
-//       {name: 'Data Science', value: 'data-sci'},
-//     ]
-//   },
-// ];
 
-const questionsEmployee = [
-  {
-    type: 'input',
-    message: "What is the employee's first name?",
-    name: 'first',
-  },
-  {
-    type: 'input',
-    message: "What is the employee's last name?",
-    name: 'last',
-  },
-  {
-    type: 'list',
-    message: "What is the employee's role?",
-    name: 'role',
-    choices: [
-      {name: 'CEO', value: 'ceo'},
-      {name: 'CFO', value: 'cfo'},
-      {name: 'Accountant', value: 'acc'},
-      {name: 'Web Developer', value: 'web-dev'},
-    ]
-  },
-  {
-    type: 'input',
-    message: "Who is the employee's manager?",
-    name: 'manager',
-    choices: [
-      {name: 'Devon Faria', value: 'df'},
-      {name: 'Deb Sparr', value: 'ds'},
-      {name: 'Rebecca Hill', value: 'rh'},
-      {name: 'Greg Hyde', value: 'gh'},
-    ]
-  },
-];
 
 const updateEmployee = [
   {
@@ -102,7 +41,6 @@ const updateEmployee = [
     ]
   },
 ];
-
 
 // Asks if you would like to perform another action
 const questionsNew = [
@@ -122,17 +60,6 @@ const questionsNew = [
   ]
   },
 ];
-
-// THIS IS A SAMPLE OF HANDLING THE NEW OBJECT FROM PROMPTS MAY USE LATER
-// function promptIntern() {
-//   inquirer
-//   .prompt(questionsIntern)
-//     .then ((data) => {
-//       const newIntern = new Intern (data.name, data.id, data.email, data.school);
-//       employees.push(newIntern);
-//     }).then(()=>{addEmployee()})
-//     .catch((err) => {console.log(err)});
-// };
 
 // Displays the data table requested in Inquirer
 const showDept = () => {
@@ -166,6 +93,7 @@ const showEmployees = () => {
   promptInit();
 };
 
+// Adding data to the tables in database
 const addDept = () => {
   const questionsDepartment = [
     {
@@ -219,12 +147,53 @@ const addRole = () => {
     .then (() => {
       promptInit();
     });
-  })
-  
+  });
 };
 
 const addEmployee = () => {
-
+  db.query('SELECT title AS name, id AS value FROM role;', function (err, roles) {
+    console.log('Roles: ', roles);
+    const questionsEmployee = [
+      {
+        type: 'input',
+        message: "What is the employee's first name?",
+        name: 'first_name',
+      },
+      {
+        type: 'input',
+        message: "What is the employee's last name?",
+        name: 'last_name',
+      },
+      {
+        type: 'list',
+        message: "What is the employee's role?",
+        name: 'role_id',
+        choices: roles
+      },
+      {
+        type: 'input',
+        message: "Who is the employee's manager?",
+        name: 'manager_id',
+        choices: [
+          {name: 'Devon Faria', value: '1'},
+          {name: 'Deb Sparr', value: '2'},
+          {name: 'Rebecca Hill', value: '3'},
+          {name: 'Greg Hyde', value: '6'},
+        ]
+      },
+    ];
+    inquirer
+    .prompt(questionsEmployee)
+    .then ((data) => {
+      console.log('Employee data: ', data);
+      db.query('INSERT INTO employee SET ?', data, function (err, result) {
+        console.log(`Added employee named ${data.first_name} ${data.last_name}`);
+      });
+    })
+    .then (() => {
+      promptInit();
+    });
+  });
 };
 
 // Initial questions prompt
@@ -236,13 +205,13 @@ function promptInit() {
         case 'view-emp': 
         showEmployees();
         return showEmployees();
-        case 'add-emp': return;
+        case 'add-emp': return addEmployee();
         case 'upd-emp': return;
         case 'view-role': return showRole();
         case 'add-role': return addRole();
         case 'view-dept': return showDept();
         case 'add-dept': return addDept();
-        case 'quit': return;
+        case 'quit': return console.log('Goodbye!');
       };
     })
     .catch((err) => {console.log(err)});
