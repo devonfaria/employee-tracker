@@ -8,8 +8,8 @@ const Department = require('../lib/department');
 const Role = require('../lib/role');
 
 // Empty arrays to collect entered staff member information
-let employees = [];
-let cards = '';
+// let employees = [];
+// let cards = '';
 
 // Questions for terminal prompts, split by employee type
 const questionsDepartment = [
@@ -123,6 +123,13 @@ function promptIntern() {
     .catch((err) => {console.log(err)});
 };
 
+// Displays the data type requested in Inquirer
+const showData = (data) => {
+  db.query(`SELECT * FROM ?`, `${data}`, function (err, results) {
+    console.log(results);
+  })
+};
+
 // Initial questions prompt
 function promptInit() {
   inquirer
@@ -143,12 +150,6 @@ function promptInit() {
     .catch((err) => {console.log(err)});
 };
 
-// Displays the data type requested in Inquirer
-const showData = (data) => {
-  db.query(`SELECT * FROM ${data}`, function (err, results) {
-    console.log(results);
-  })
-};
 
 // Initiates program
 promptInit();
