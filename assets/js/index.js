@@ -7,10 +7,6 @@ const Employee = require('../lib/employee');
 const Department = require('../lib/department');
 const Role = require('../lib/role');
 
-// Empty arrays to collect entered staff member information
-// let employees = [];
-// let cards = '';
-
 // Questions for terminal prompts, split by employee type
 const questionsDepartment = [
   {

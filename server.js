@@ -6,9 +6,6 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const path = require('path');
 
-// Pulling in functions for constructor classes and prompts
-// const index = require('./assets/js/index');
-
 // Declaring express as pur application server
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,42 +26,33 @@ const db = mysql.createConnection(
 );
 
 // Constructor functions for table objects
-const Employee = require('./assets/lib/employee');
-const Department = require('./assets/lib/department');
-const Role = require('./assets/lib/role');
+// const Employee = require('./assets/lib/employee');
+// const Department = require('./assets/lib/department');
+// const Role = require('./assets/lib/role');
 
-// Questions for terminal prompts
-// const questionsDepartment = [
+// const questionsRole = [
 //   {
 //     type: 'input',
-//     message: "What is the name of the department?",
+//     message: "What is the name of the role",
 //     name: 'name',
 //   },
+//   {
+//     type: 'input',
+//     message: "What is the salary of the role?",
+//     name: 'salary',
+//   },
+//   {
+//     type: 'rawlist',
+//     message: "What department does the role belong to?",
+//     name: 'department',
+//     choices: [
+//       {name: 'Executive Management', value: 'exec'},
+//       {name: 'Accounting', value: 'acc'},
+//       {name: 'Web Development', value: 'web-dev'},
+//       {name: 'Data Science', value: 'data-sci'},
+//     ]
+//   },
 // ];
-
-const questionsRole = [
-  {
-    type: 'input',
-    message: "What is the name of the role",
-    name: 'name',
-  },
-  {
-    type: 'input',
-    message: "What is the salary of the role?",
-    name: 'salary',
-  },
-  {
-    type: 'rawlist',
-    message: "What department does the role belong to?",
-    name: 'department',
-    choices: [
-      {name: 'Executive Management', value: 'exec'},
-      {name: 'Accounting', value: 'acc'},
-      {name: 'Web Development', value: 'web-dev'},
-      {name: 'Data Science', value: 'data-sci'},
-    ]
-  },
-];
 
 const questionsEmployee = [
   {
@@ -200,7 +188,39 @@ const addDept = () => {
 };
 
 const addRole = () => {
-
+  db.query('SELECT name, id AS value FROM department;', function (err, departments) {
+    console.log('Result: ', departments);
+    const questionsRole = [
+      {
+        type: 'input',
+        message: "What is the name of the role",
+        name: 'title',
+      },
+      {
+        type: 'input',
+        message: "What is the salary of the role?",
+        name: 'salary',
+      },
+      {
+        type: 'rawlist',
+        message: "What department does the role belong to?",
+        name: 'department_id',
+        choices: departments
+      },
+    ];
+    inquirer
+    .prompt(questionsRole)
+    .then ((data) => {
+      // console.log('Role data: ', data);
+      db.query('INSERT INTO role SET ?', data, function (err, result) {
+        console.log(`Added role named ${data.title}`);
+      });
+    })
+    .then (() => {
+      promptInit();
+    });
+  })
+  
 };
 
 const addEmployee = () => {
@@ -208,8 +228,8 @@ const addEmployee = () => {
 };
 
 // Initial questions prompt
-async function promptInit() {
-  await inquirer
+function promptInit() {
+  inquirer
   .prompt(questionsNew)
     .then ((data) => {
       switch (data.action) {
@@ -219,7 +239,7 @@ async function promptInit() {
         case 'add-emp': return;
         case 'upd-emp': return;
         case 'view-role': return showRole();
-        case 'add-role': return;
+        case 'add-role': return addRole();
         case 'view-dept': return showDept();
         case 'add-dept': return addDept();
         case 'quit': return;
@@ -240,3 +260,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Application launching on port http://localhost:${PORT}/`);
 });
+
