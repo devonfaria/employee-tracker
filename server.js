@@ -34,13 +34,13 @@ const Department = require('./assets/lib/department');
 const Role = require('./assets/lib/role');
 
 // Questions for terminal prompts
-const questionsDepartment = [
-  {
-    type: 'input',
-    message: "What is the name of the department?",
-    name: 'name',
-  },
-];
+// const questionsDepartment = [
+//   {
+//     type: 'input',
+//     message: "What is the name of the department?",
+//     name: 'name',
+//   },
+// ];
 
 const questionsRole = [
   {
@@ -166,11 +166,6 @@ const showRole = () => {
   promptInit();
 };
 
-// `SELECT reviews.id, content, name AS movie_name 
-//     FROM reviews
-//     LEFT JOIN movies
-//     ON reviews.movie_id = movies.id`
-
 const showEmployees = () => {
   db.query(
     `SELECT employee.id AS emp_id, first_name, last_name, title, salary 
@@ -183,12 +178,40 @@ const showEmployees = () => {
   promptInit();
 };
 
+const addDept = () => {
+  const questionsDepartment = [
+    {
+      type: 'input',
+      message: "What is the name of the department?",
+      name: 'name',
+    },
+  ];
+  inquirer
+  .prompt(questionsDepartment)
+  .then ((data) => {
+    console.log(data);
+    db.query('INSERT INTO department SET ?', data, function (err, result) {
+      console.log(`Added deparment named ${data.name}`);
+    });
+  })
+  .then (() => {
+    promptInit();
+  });
+};
+
+const addRole = () => {
+
+};
+
+const addEmployee = () => {
+
+};
+
 // Initial questions prompt
 async function promptInit() {
   await inquirer
   .prompt(questionsNew)
     .then ((data) => {
-      console.log(`Line 163: `, data);
       switch (data.action) {
         case 'view-emp': 
         showEmployees();
@@ -198,7 +221,7 @@ async function promptInit() {
         case 'view-role': return showRole();
         case 'add-role': return;
         case 'view-dept': return showDept();
-        case 'add-dept': return;
+        case 'add-dept': return addDept();
         case 'quit': return;
       };
     })
