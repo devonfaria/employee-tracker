@@ -13,6 +13,19 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'emptracker_db'
+  },
+  console.log(`Connected to the emptracker_db database.`)
+);
+
+
+
 app.listen(PORT, () => {
   console.log(`Application launching on port http://localhost:${PORT}/`);
 });
