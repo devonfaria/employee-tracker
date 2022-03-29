@@ -26,6 +26,10 @@ const db = mysql.createConnection(
 
 
 
+app.use((req, res) => {
+  res.status(404).end();
+});
+
 app.listen(PORT, () => {
   console.log(`Application launching on port http://localhost:${PORT}/`);
 });

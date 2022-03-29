@@ -99,7 +99,7 @@ const questionsNew = [
   {
   type: 'rawlist',
   message: 'Would you like to do?',
-  name: 'type',
+  name: 'action',
   choices: [
     {name: 'View All Employees', value: 'view-emp'},
     {name: 'Add Employee', value: 'add-emp'},
@@ -113,23 +113,41 @@ const questionsNew = [
   },
 ];
 
+function promptIntern() {
+  inquirer
+  .prompt(questionsIntern)
+    .then ((data) => {
+      const newIntern = new Intern (data.name, data.id, data.email, data.school);
+      employees.push(newIntern);
+    }).then(()=>{addEmployee()})
+    .catch((err) => {console.log(err)});
+};
+
 // Initial questions prompt
 function promptInit() {
   inquirer
   .prompt(questionsNew)
     .then ((data) => {
-      switch (data.value) {
-        case 'view-emp': return;
+      console.log(data);
+      switch (data.action) {
+        case 'view-emp': return showData(employee);
         case 'add-emp': return;
         case 'upd-emp': return;
-        case 'view-role': return;
+        case 'view-role': return showData(role);
         case 'add-role': return;
-        case 'view-dept': return;
+        case 'view-dept': return showData(department);
         case 'add-dept': return;
         case 'quit': return;
       };
     })
     .catch((err) => {console.log(err)});
+};
+
+// Displays the data type requested in Inquirer
+const showData = (data) => {
+  db.query(`SELECT * FROM ${data}`, function (err, results) {
+    console.log(results);
+  })
 };
 
 // Initiates program
