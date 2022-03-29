@@ -146,23 +146,38 @@ const questionsNew = [
 //     .catch((err) => {console.log(err)});
 // };
 
-// Displays the data type requested in Inquirer
+// Displays the data table requested in Inquirer
 const showDept = () => {
-  db.query(`SELECT * FROM department`, function (err, results) {
-    console.table(results);
-  })
-  promptInit();
-};
-
-const showEmployees = () => {
-  db.query(`SELECT * FROM employee`, function (err, results) {
+  db.query(`SELECT id AS dept_id, name FROM department`, function (err, results) {
     console.table(results);
   })
   promptInit();
 };
 
 const showRole = () => {
-  db.query(`SELECT * FROM role`, function (err, results) {
+  db.query(
+    `SELECT title, role.id AS role_id, name AS dept_name, salary 
+    FROM role
+    LEFT JOIN department
+    ON role.department_id = department.id;
+    `, function (err, results) {
+    console.table(results);
+  })
+  promptInit();
+};
+
+// `SELECT reviews.id, content, name AS movie_name 
+//     FROM reviews
+//     LEFT JOIN movies
+//     ON reviews.movie_id = movies.id`
+
+const showEmployees = () => {
+  db.query(
+    `SELECT employee.id AS emp_id, first_name, last_name, title, salary 
+    FROM employee
+    LEFT JOIN role
+    ON employee.role_id = role.id;
+    `, function (err, results) {
     console.table(results);
   })
   promptInit();
