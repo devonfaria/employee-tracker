@@ -25,7 +25,10 @@ const db = mysql.createConnection(
   console.log(`Connected to the emptracker_db database.`)
 );
 
-
+let list = [];
+const testManager = (data) => {
+  list = data;
+}
 
 
 const updateEmployee = [
@@ -150,9 +153,9 @@ const addRole = () => {
   });
 };
 
+
 const addEmployee = () => {
   db.query('SELECT title AS name, id AS value FROM role;', function (err, roles) {
-    console.log('Roles: ', roles);
     const questionsEmployee = [
       {
         type: 'input',
@@ -170,31 +173,38 @@ const addEmployee = () => {
         name: 'role_id',
         choices: roles
       },
-      {
-        type: 'input',
-        message: "Who is the employee's manager?",
-        name: 'manager_id',
-        choices: [
-          {name: 'Devon Faria', value: '1'},
-          {name: 'Deb Sparr', value: '2'},
-          {name: 'Rebecca Hill', value: '3'},
-          {name: 'Greg Hyde', value: '6'},
-        ]
-      },
     ];
     inquirer
     .prompt(questionsEmployee)
     .then ((data) => {
-      console.log('Employee data: ', data);
-      db.query('INSERT INTO employee SET ?', data, function (err, result) {
-        console.log(`Added employee named ${data.first_name} ${data.last_name}`);
-      });
-    })
+      let factor = data;
+      db.query('SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;', 
+      function (err, employees) {
+        let managerPrompt = [
+          {
+            type: 'list',
+            message: "Who is the employee's manager?",
+            name: 'manager_id',
+            choices: employees
+          },
+        ] 
+        inquirer
+        .prompt(managerPrompt)
+        .then((data) => {
+          factor.manager_id = data.manager_id;
+          return factor
+        })
+        .then((data) => {
+          db.query('INSERT INTO employee SET ?', data, function (err, result) {
+            console.log(`Added employee named ${data.first_name} ${data.last_name}`);
+          });
+      })
     .then (() => {
       promptInit();
     });
-  });
-};
+    });
+});
+})};
 
 // Initial questions prompt
 function promptInit() {
