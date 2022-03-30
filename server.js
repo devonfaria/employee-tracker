@@ -65,11 +65,12 @@ const questionsNew = [
 ];
 
 // Displays the data table requested in Inquirer
-const showDept = () => {
+async function showDept() {
   db.query(`SELECT id AS dept_id, name FROM department`, function (err, results) {
-    console.table(results);
+    return console.table(results);
   })
-  promptInit();
+  return
+  // promptInit();
 };
 
 const showRole = () => {
@@ -108,7 +109,6 @@ const addDept = () => {
   inquirer
   .prompt(questionsDepartment)
   .then ((data) => {
-    console.log(data);
     db.query('INSERT INTO department SET ?', data, function (err, result) {
       console.log(`Added deparment named ${data.name}`);
     });
@@ -120,7 +120,6 @@ const addDept = () => {
 
 const addRole = () => {
   db.query('SELECT name, id AS value FROM department;', function (err, departments) {
-    console.log('Result: ', departments);
     const questionsRole = [
       {
         type: 'input',
@@ -142,7 +141,6 @@ const addRole = () => {
     inquirer
     .prompt(questionsRole)
     .then ((data) => {
-      // console.log('Role data: ', data);
       db.query('INSERT INTO role SET ?', data, function (err, result) {
         console.log(`Added role named ${data.title}`);
       });
@@ -208,18 +206,17 @@ const addEmployee = () => {
 
 // Initial questions prompt
 function promptInit() {
+  console.log('Welcome to the Employee Tracker. Please enter an action below.');
   inquirer
   .prompt(questionsNew)
     .then ((data) => {
       switch (data.action) {
-        case 'view-emp': 
-        showEmployees();
-        return showEmployees();
+        case 'view-emp': return showEmployees();
         case 'add-emp': return addEmployee();
         case 'upd-emp': return;
         case 'view-role': return showRole();
         case 'add-role': return addRole();
-        case 'view-dept': return showDept();
+        case 'view-dept': return showDept().then(promptInit());
         case 'add-dept': return addDept();
         case 'quit': return console.log('Goodbye!');
       };
