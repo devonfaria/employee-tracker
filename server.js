@@ -30,21 +30,6 @@ const testManager = (data) => {
   list = data;
 }
 
-
-const updateEmployee = [
-  {
-    type: 'input',
-    message: "Who is the employee's manager?",
-    name: 'manager',
-    choices: [
-      {name: 'Devon Faria', value: 'df'},
-      {name: 'Deb Sparr', value: 'ds'},
-      {name: 'Rebecca Hill', value: 'rh'},
-      {name: 'Greg Hyde', value: 'gh'},
-    ]
-  },
-];
-
 // Asks if you would like to perform another action
 const questionsNew = [
   {
@@ -204,6 +189,72 @@ const addEmployee = () => {
 });
 })};
 
+const updateEmployee = () => {
+  db.query('SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;', function (err, employees) {
+    const whichEmployee = [
+      {
+        type: 'rawlist',
+        message: "Which employee would you like to update?",
+        name: 'id',
+        choices: employees
+      },
+    ];
+    inquirer
+    .prompt(whichEmployee)
+    .then ((data) => {
+      let factor = data;
+      console.log('which employee: ', data);
+      db.query('SELECT title AS name, id AS value FROM role;', function (err, roles) {
+        const updateRole = [
+          {
+            type: 'rawlist',
+            message: "What is the employee's new role?",
+            name: 'role_id',
+            choices: roles
+          },
+        ]; 
+        inquirer
+        .prompt(updateRole)
+        .then((data) => {
+          factor.role_id = data.role_id;
+          return factor
+        })
+        .then((data) => {
+          db.query('UPDATE employee SET role_id = ? WHERE id = ?', [data.role_id, data.id], function (err, result) {
+            console.log(`Updated role id to ${data.role_id} at emp id ${data.id}`);
+          });
+      })
+    .then (() => {
+      promptInit();
+    });
+    });
+});
+})};
+
+// const updateEmployee = () => {
+  // db.query('SELECT title AS name, id AS value FROM role;', function (err, roles) {
+  //   const updateRole = [
+  //     {
+  //       type: 'rawlist',
+  //       message: "What is the employee's new role?",
+  //       name: 'role_id',
+  //       choices: roles
+  //     },
+  //   ];
+//     inquirer
+//     .prompt(updateRole)
+//     .then ((data) => {
+//       db.query('UPDATE employee SET role_id=? WHERE id=?', data, function (err, result) {
+//         console.log(`Added role named ${data.title}`);
+//       });
+//     })
+//     .then (() => {
+//       promptInit();
+//     });
+//   });
+// };
+
+
 // Initial questions prompt
 function promptInit() {
   console.log('Welcome to the Employee Tracker. Please enter an action below.');
@@ -213,7 +264,7 @@ function promptInit() {
       switch (data.action) {
         case 'view-emp': return showEmployees();
         case 'add-emp': return addEmployee();
-        case 'upd-emp': return;
+        case 'upd-emp': return updateEmployee();
         case 'view-role': return showRole();
         case 'add-role': return addRole();
         case 'view-dept': return showDept().then(promptInit());
