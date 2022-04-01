@@ -47,12 +47,10 @@ const showRole = () => {
 
 const showEmployees = () => {
   db.query(
-    `SELECT employee.id AS emp_id, first_name, last_name, title, salary , name AS dept_name, manager_id AS manager_emp_number
-    FROM role
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary , name AS dept_name, CONCAT(manager.first_name, ' ' , manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id 
     LEFT JOIN department
     ON role.department_id = department.id
-    RIGHT JOIN employee
-    ON employee.role_id = role.id;
+    LEFT JOIN employee manager ON manager.id = employee.manager_id;
     `, function (err, results) {
     console.log('');
     console.table(results);
