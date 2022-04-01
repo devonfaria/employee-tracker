@@ -1,5 +1,5 @@
 // Importing node modules
-// const cTable = require('console.table');
+require('console.table');
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
@@ -26,9 +26,10 @@ const db = mysql.createConnection(
 // Displays the data table requested in console
 const showDept = () => {
   db.query(`SELECT id AS dept_id, name FROM department`, function (err, results) {
+    console.log('');
     console.table(results);
+    promptInit();
   })
-  promptInit();
 };
 
 const showRole = () => {
@@ -38,9 +39,10 @@ const showRole = () => {
     LEFT JOIN department
     ON role.department_id = department.id;
     `, function (err, results) {
+    console.log('');
     console.table(results);
+    promptInit();
   })
-  promptInit();
 };
 
 const showEmployees = () => {
@@ -50,9 +52,10 @@ const showEmployees = () => {
     LEFT JOIN role
     ON employee.role_id = role.id;
     `, function (err, results) {
+    console.log('');
     console.table(results);
+    promptInit();
   })
-  promptInit();
 };
 
 // Adding data to the tables in company database
@@ -69,11 +72,9 @@ const addDept = () => {
     .then((data) => {
       db.query('INSERT INTO department SET ?', data, function (err, result) {
         console.log(`Added deparment named ${data.name}`);
+        promptInit();
       });
     })
-    .then(() => {
-      promptInit();
-    });
 };
 
 const addRole = () => {
@@ -101,11 +102,10 @@ const addRole = () => {
       .then((data) => {
         db.query('INSERT INTO role SET ?', data, function (err, result) {
           console.log(`Added role named ${data.title}`);
+          promptInit();
+
         });
       })
-      .then(() => {
-        promptInit();
-      });
   });
 };
 
@@ -153,11 +153,9 @@ const addEmployee = () => {
               .then((data) => {
                 db.query('INSERT INTO employee SET ?', data, function (err, result) {
                   console.log(`Added employee named ${data.first_name} ${data.last_name}`);
+                  promptInit();
                 });
               })
-              .then(() => {
-                promptInit();
-              });
           });
       });
   });
@@ -197,11 +195,9 @@ const updateEmployee = () => {
             .then((data) => {
               db.query('UPDATE employee SET role_id = ? WHERE id = ?', [data.role_id, data.id], function (err, result) {
                 console.log(`Updated role id to ${data.role_id} at emp id ${data.id}`);
+                promptInit();
               });
             })
-            .then(() => {
-              promptInit();
-            });
         });
       });
   });
@@ -236,7 +232,7 @@ function promptInit() {
         case 'upd-emp': return updateEmployee();
         case 'view-role': return showRole();
         case 'add-role': return addRole();
-        case 'view-dept': return showDept().then(promptInit());
+        case 'view-dept': return showDept();
         case 'add-dept': return addDept();
         case 'quit': return console.log('Goodbye!');
       };
