@@ -47,9 +47,11 @@ const showRole = () => {
 
 const showEmployees = () => {
   db.query(
-    `SELECT employee.id AS emp_id, first_name, last_name, title, salary 
-    FROM employee
-    LEFT JOIN role
+    `SELECT employee.id AS emp_id, first_name, last_name, title, salary , name AS dept_name, manager_id AS manager_emp_number
+    FROM role
+    LEFT JOIN department
+    ON role.department_id = department.id
+    RIGHT JOIN employee
     ON employee.role_id = role.id;
     `, function (err, results) {
     console.log('');
