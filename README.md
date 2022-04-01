@@ -63,7 +63,7 @@ You can exit the shell by entering:
 
 And then type:
 
-```npm start```
+`node index.js`
 
 If you get a message in the terminal saying "Connected to the emptracker_db database.
 Welcome to the Employee Tracker. Please enter an action below.", then you have installed the program correctly.  
