@@ -39,7 +39,7 @@ Thhis is the display for the employee table, with unique ID, first, last, title,
 
 ![employee table display](./images/employees.png)
 
-[Click here for a video explaining installation and initalizing the application](https://drive.google.com/drive/folders/1t82iAdKtW-BBx0jmapCqC82QJS31dJ_F?usp=sharing)
+[Click here for a video navigating the application](https://drive.google.com/file/d/1zDRMRjnmBdjHCNVsgOhOjQ-nIq1v_vha/view?usp=sharing)
 
 ## Installation
 
@@ -72,7 +72,7 @@ The Inquirer module will bring up the main menu of the Employee Tracker. When ad
 
 Even directly after an update, you can immediately see the changes when viewing your lists. Choose 'quit' on the main menu when finished.
 
-[Click here for a video explaining installation and initalizing the application](https://drive.google.com/drive/folders/1t82iAdKtW-BBx0jmapCqC82QJS31dJ_F?usp=sharing)
+[Click here for a video navigating the application](https://drive.google.com/file/d/1zDRMRjnmBdjHCNVsgOhOjQ-nIq1v_vha/view?usp=sharing)
 
 ## Technologies
 
